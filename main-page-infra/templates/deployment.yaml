@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-page
+  labels:
+    app: main-page
+spec:
+  selector:
+    matchLabels:
+      app: main-page
+  template:
+    metadata:
+      labels:
+        app: main-page
+    spec:
+      containers:
+        - name: main-page
+          image: mdronski/main-page:v1.0
