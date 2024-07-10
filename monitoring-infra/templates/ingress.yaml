@@ -1,0 +1,16 @@
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: prometheus-stack-grafana
+  namespace: monitoring
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`mlopstrain.bieda.it`) && PathPrefix(`/grafana`)
+    kind: Rule
+    services:
+    - name: prometheus-stack-grafana
+      port: 80
+      namespace: monitoring
