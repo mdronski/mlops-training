@@ -2,7 +2,6 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: main-page
-  namespace: mainpage
 spec:
   entryPoints:
     - web
@@ -12,5 +11,4 @@ spec:
     services:
     - name: main-page-service
       port: 80
-      namespace: mainpage
       passHostHeader: true
