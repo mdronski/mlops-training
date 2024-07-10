@@ -11,6 +11,6 @@ spec:
   - match: Host(`mlopstrain.bieda.it`) && PathPrefix(`/grafana`)
     kind: Rule
     services:
-    - name: prometheus-stack-grafana
-      port: 3000
+    - name: monitoring-grafana
+      port: 80
       namespace: monitoring
