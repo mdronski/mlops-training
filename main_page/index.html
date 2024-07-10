@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Site with Bootstrap Links</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .btn-group-vertical .btn {
+            width: 100%;
+        }
+
+        .container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <div>
+            <h1>MLOps training</h1>
+            <div class="btn-group-vertical mt-4">
+                <a href="mlflow" class="btn btn-primary btn-lg mb-2">MLflow</a>
+                <a href="grafana" class="btn btn-primary btn-lg mb-2">Grafana</a>
+                <a href="argocd" class="btn btn-primary btn-lg mb-2">Argo</a>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
