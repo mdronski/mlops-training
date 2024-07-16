@@ -41,6 +41,25 @@ spec:
   type: ClusterIP
 ---
 apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-mlflow-api
+  namespace: mlflow
+spec:
+  stripPrefix:
+    prefixes:
+      - "/mlflow/api"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: add-api-prefix
+  namespace: mlflow
+spec:
+  addPrefix:
+    prefix: "/api"
+---
+apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: mlflow
@@ -48,6 +67,15 @@ spec:
   entryPoints:
     - web
   routes:
+  - match: Host(`mlopstrain.bieda.it`) && PathPrefix(`/mlflow/api`)
+    kind: Rule
+    services:
+    - name: mlflow-service
+      port: 80
+      passHostHeader: true
+    middlewares:
+    - name: strip-mlflow-api
+    - name: add-api-prefix
   - match: Host(`mlopstrain.bieda.it`) && PathPrefix(`/mlflow`)
     kind: Rule
     services:
