@@ -1,0 +1,19 @@
+global:
+  postgresql:
+    auth:
+      database: mlflow
+      username: mlflow
+      existingSecret: "postgres-secrets"
+      secretKeys:
+        adminPasswordKey: "postgres-password"
+        userPasswordKey: "postgres-password" 
+
+postgresql:
+  primary:
+    persistence:
+      existingClaim: "postgresql-pvc"
+      enabled: true
+      size: 5Gi
+
+  volumePermissions:
+      enabled: true

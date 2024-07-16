@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow
+  labels:
+    app: mlflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mlflow
+  template:
+    metadata:
+      labels:
+        app: mlflow
+    spec:
+      containers:
+      - name: mlflow
+        image: mdronski/mlflow-server:v1.0
+        imagePullPolicy: Always
+        command: ["mlflow"]
+        args: ["server", "--host", "0.0.0.0", "--port", "80", "--static-prefix", "/mlflow", "--backend-store-uri", "postgresql+psycopg2://mlflow:mlops314@mlflow-postgresql.mlflow.svc.cluster.local/mlflow"]
+        env:
+        - name: POSTTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: postgres-password
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow-service
+spec:
+  selector:
+    app: mlflow
+  ports:
+    - protocol: TCP
+      port: 80
+  type: ClusterIP
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mlflow
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`mlopstrain.bieda.it`) && PathPrefix(`/mlflow`)
+    kind: Rule
+    services:
+    - name: mlflow-service
+      port: 80
+      passHostHeader: true
