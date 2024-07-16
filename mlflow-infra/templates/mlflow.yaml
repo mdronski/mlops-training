@@ -19,9 +19,9 @@ spec:
         image: mdronski/mlflow-server:v1.0
         imagePullPolicy: Always
         command: ["mlflow"]
-        args: ["server", "--host", "0.0.0.0", "--port", "80", "--static-prefix", "/mlflow", "--backend-store-uri", "postgresql+psycopg2://mlflow:mlops314@mlflow-postgresql.mlflow.svc.cluster.local/mlflow"]
+        args: ["server", "--host", "0.0.0.0", "--app-name", "basic-auth", "--port", "80", "--static-prefix", "/mlflow", "--backend-store-uri", "postgresql+psycopg2://mlflow:$(POSTGRESQL_PASSWORD)@mlflow-postgresql.mlflow.svc.cluster.local/mlflow"]
         env:
-        - name: POSTTGRESQL_PASSWORD
+        - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: postgres-secrets
