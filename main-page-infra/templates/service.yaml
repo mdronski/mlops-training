@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: main-page-service
+  namespace: main-page
 spec:
   selector:
     app: main-page

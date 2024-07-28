@@ -1,0 +1,1 @@
+curl -L -H "Content-Type: application/json" -d '{ "inputs": [{"name": "input","shape": [-1, 13],"datatype": "FP64","data": [1.371e+01, 5.650e+00, 2.450e+00, 2.050e+01, 9.500e+01, 1.680e+00,6.100e-01, 5.200e-01, 1.060e+00, 7.700e+00, 6.400e-01, 1.740e+00, 7.400e+02]}]}' https://mlopstrain.bieda.it/wine

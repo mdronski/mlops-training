@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: main-page
+  namespace: main-page
   labels:
     app: main-page
 spec:

@@ -1,0 +1,62 @@
+apiVersion: "serving.kserve.io/v1beta1"
+kind: "InferenceService"
+metadata:
+  name: "mlflow-wine-classifier"
+  namespace: "kserve"
+spec:
+  predictor:
+    maxReplicas: 1
+    containers:
+      - name: "mlflow-wine-classifier"
+        image: "mdronski/mlflow-wine-quality:latest"
+        imagePullPolicy: Never
+        ports:
+          - containerPort: 8080
+            protocol: TCP
+        env:
+          - name: PROTOCOL
+            value: "v2"
+        resources:
+          limits:
+            cpu: 200m
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 1Gi
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-wine
+  namespace: kserve
+spec:
+  stripPrefix:
+    prefixes:
+      - "/wine"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: add-kserve-wine-classifier
+  namespace: kserve
+spec:
+  addPrefix:
+    prefix: "/v2/models/mlflow-model/infer"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: wine-classifier
+  namespace: kserve
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`mlopstrain.bieda.it`) && Path(`/wine`)
+    kind: Rule
+    services:
+    - name: mlflow-wine-classifier-predictor
+      port: 80
+    middlewares:
+    - name: strip-wine
+    - name: add-kserve-wine-classifier
