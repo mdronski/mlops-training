@@ -20,14 +20,26 @@ spec:
         image: mdronski/mlflow-server:v1.0
         # imagePullPolicy: Always
         command: ["mlflow"]
-        args: ["server", "--host", "0.0.0.0", "--port", "80", "--static-prefix", "/mlflow", "--backend-store-uri", "postgresql+psycopg2://mlflow:$(POSTGRESQL_PASSWORD)@mlflow-postgresql.mlflow.svc.cluster.local/mlflow"]
+        args: ["server", "--host", "0.0.0.0",
+              "--port", "80",
+              "--static-prefix", "/mlflow",
+              "--backend-store-uri", "postgresql+psycopg2://mlflow:$(POSTGRESQL_PASSWORD)@mlflow-postgresql.mlflow.svc.cluster.local/mlflow",
+              "--artifacts-destination", "s3://mlflow"
+           ]
         env:
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: postgres-secrets
               key: postgres-password
-
+        - name: AWS_ACCESS_KEY_ID
+          value: minio
+        - name: AWS_SECRET_ACCESS_KEY
+          value: minio123
+        - name: MLFLOW_S3_ENDPOINT_URL
+          value: http://minio-service.kubeflow.svc.cluster.local:9000
+        - name: MLFLOW_S3_IGNORE_TLS
+          value: "true"
 ---
 apiVersion: v1
 kind: Service
@@ -71,6 +83,7 @@ spec:
     - web
   routes:
   - match: Host(`mlopstrain.bieda.it`) && PathPrefix(`/mlflow/api`)
+    priority: 999
     kind: Rule
     services:
     - name: mlflow-service
@@ -80,6 +93,7 @@ spec:
     - name: strip-mlflow-api
     - name: add-api-prefix
   - match: Host(`mlopstrain.bieda.it`) && PathPrefix(`/mlflow`)
+    priority: 998
     kind: Rule
     services:
     - name: mlflow-service
